@@ -13,12 +13,13 @@ public class AddInfo {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    private String position;
+    @Enumerated(EnumType.STRING)
+    private UserPosition position;
     private String generation;
 
     protected AddInfo() {}
 
-    public AddInfo(UserRole role, String position, String generation) {
+    public AddInfo(UserRole role, UserPosition position, String generation) {
         this.role = role;
         this.position = position;
         this.generation = generation;

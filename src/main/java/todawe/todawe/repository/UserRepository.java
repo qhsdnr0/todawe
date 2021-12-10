@@ -30,4 +30,8 @@ public class UserRepository {
                 .orderBy(Quser.updatedAt.desc()).limit(8).offset(0).fetch();
     }
 
+    public User findUserByKakaoId(Long kakaoId) {
+        return jpaQueryFactory.selectFrom(Quser).where(Quser.kakaoProfile.kakaoId.eq(kakaoId)).fetchOne();
+    }
+
 }

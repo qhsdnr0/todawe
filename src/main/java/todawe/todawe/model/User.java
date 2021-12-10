@@ -39,4 +39,24 @@ public class User {
 
     @OneToMany(mappedBy = "takeUser")
     private List<Like> takeLikes = new ArrayList<>();
+
+    public void addSendComment(Comment comment) {
+        sendComments.add(comment);
+        comment.setSendUser(this);
+    }
+
+    public void addTakeComment(Comment comment) {
+        takeComments.add(comment);
+        comment.setTakeUser(this);
+    }
+
+    public void addSendLike(Like like) {
+        sendLikes.add(like);
+        like.setSendUser(this);
+    }
+
+    public void addTakeLike(Like like) {
+        takeLikes.add(like);
+        like.setTakeUser(this);
+    }
 }

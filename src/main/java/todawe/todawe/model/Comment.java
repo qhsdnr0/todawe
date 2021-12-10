@@ -14,6 +14,9 @@ public class Comment {
     @Id @GeneratedValue
     private Long id;
 
+    @Column(length = 2000)
+    private String content;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

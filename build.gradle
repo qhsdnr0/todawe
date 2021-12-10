@@ -1,0 +1,73 @@
+buildscript {
+	ext {
+		queryDslVersion = "5.0.0"
+	}
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.6.1'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
+	id 'java'
+}
+
+group = 'todawe'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	querydsl.extendsFrom compileClasspath
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'mysql:mysql-connector-java'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0'
+	implementation group: 'com.querydsl', name: 'querydsl-apt', version: '5.0.0'
+	implementation group: 'com.querydsl', name: 'querydsl-core', version: '5.0.0'
+}
+
+//querydsl 추가
+
+def querydslDir = "src/main/generated"
+
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+	main.java.srcDir querydslDir
+}
+
+compileQuerydsl{
+	options.annotationProcessorPath = configurations.querydsl
+}
+
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
+
+compileQuerydsl.doFirst { if(file(querydslDir).exists() ) delete(file(querydslDir)) }
+
+
+test {
+	useJUnitPlatform()
+}

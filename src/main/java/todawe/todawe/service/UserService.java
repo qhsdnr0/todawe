@@ -11,13 +11,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
+import todawe.todawe.model.Comment;
 import todawe.todawe.model.KakaoProfile;
+import todawe.todawe.model.Like;
 import todawe.todawe.model.User;
 import todawe.todawe.repository.UserRepository;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import todawe.todawe.token.Token;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 @Service
 @Transactional
@@ -26,6 +30,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RestTemplate restTemplate;
+    private final Token token;
 
     public KakaoProfile getUserInfoKakaoUserByToken(String kakaoToken) {
         HttpHeaders headers = new HttpHeaders();
@@ -51,13 +56,28 @@ public class UserService {
 
     }
 
-    public void createUser(String kakaoToken) {
-        User user = new User();
+    public String getTokenByUser(String kakaoToken) {
         KakaoProfile kakaoProfile = getUserInfoKakaoUserByToken(kakaoToken);
-        user.setKakaoProfile(kakaoProfile);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
+        User user = userRepository.findUserByKakaoId(kakaoProfile.getKakaoId());
+        if (userRepository.findUserByKakaoId(kakaoProfile.getKakaoId()) == null) {
+            user = new User();
+            user.setKakaoProfile(kakaoProfile);
+            user.setCreatedAt(LocalDateTime.now());
+            user.setUpdatedAt(LocalDateTime.now());
 
-        userRepository.saveUser(user);
+            userRepository.saveUser(user);
+        }
+
+        return token.makeJwtToken(user);
+    }
+
+    public void userComment(Comment comment, User sendUser, User takeUser) {
+        sendUser.addSendComment(comment);
+        takeUser.addTakeComment(comment);
+    }
+
+    public void userLike(Like like, User sendUser, User takeUser) {
+        sendUser.addSendLike(like);
+        takeUser.addSendLike(like);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
+import todawe.todawe.exception.UnAuthorizedException;
 import todawe.todawe.model.Comment;
 import todawe.todawe.model.KakaoProfile;
 import todawe.todawe.model.Like;
@@ -50,14 +51,12 @@ public class UserService {
 
             return new KakaoProfile(kakaoId, email, name);
         } catch (RestClientException | ParseException ex) {
-            ex.printStackTrace();
-            throw new IllegalStateException("Unauthorized");
+            throw new UnAuthorizedException();
         }
 
     }
 
-    public String getTokenByUser(String kakaoToken) {
-        KakaoProfile kakaoProfile = getUserInfoKakaoUserByToken(kakaoToken);
+    public String createKakaoUser(KakaoProfile kakaoProfile) {
         User user = userRepository.findUserByKakaoId(kakaoProfile.getKakaoId());
         if (userRepository.findUserByKakaoId(kakaoProfile.getKakaoId()) == null) {
             user = new User();

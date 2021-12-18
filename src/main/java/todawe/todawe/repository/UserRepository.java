@@ -2,7 +2,8 @@ package todawe.todawe.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import todawe.todawe.model.QUser;
+import todawe.todawe.model.Comment;
+import todawe.todawe.model.*;
 import todawe.todawe.model.User;
 
 import javax.persistence.EntityManager;
@@ -19,7 +20,9 @@ public class UserRepository {
     @PersistenceContext
     private final EntityManager em;
     private final JPAQueryFactory jpaQueryFactory;
+
     QUser Quser = QUser.user;
+    QComment Qcomment = QComment.comment;
 
     public void saveUser(User user) { em.persist(user);}
 
@@ -34,4 +37,7 @@ public class UserRepository {
         return jpaQueryFactory.selectFrom(Quser).where(Quser.kakaoProfile.kakaoId.eq(kakaoId)).fetchOne();
     }
 
+    public List<Comment> findCommentsByUser(User takeUser) {
+        return jpaQueryFactory.selectFrom(Qcomment).where(Qcomment.takeUser.eq(takeUser)).fetch();
+    }
 }

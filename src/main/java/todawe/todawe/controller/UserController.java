@@ -18,11 +18,12 @@ public class UserController {
 
     private UserService userService;
 
-    @PostMapping("/signup")
+    @PostMapping("/login")
     public String createUser(String kakaoToken) {
         KakaoProfile kakaoProfile = userService.getUserInfoKakaoUserByToken(kakaoToken);
-        return userService.createKakaoUser(kakaoProfile);
+        return userService.getOrCreateKakaoUser(kakaoProfile);
     }
 
+    @PostMapping
 
 }

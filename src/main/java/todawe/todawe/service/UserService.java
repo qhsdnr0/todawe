@@ -17,9 +17,8 @@ import todawe.todawe.model.KakaoProfile;
 import todawe.todawe.model.Like;
 import todawe.todawe.model.User;
 import todawe.todawe.repository.UserRepository;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import todawe.todawe.token.Token;
+import todawe.todawe.util.Token;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -56,7 +55,7 @@ public class UserService {
 
     }
 
-    public String createKakaoUser(KakaoProfile kakaoProfile) {
+    public String getOrCreateKakaoUser(KakaoProfile kakaoProfile) {
         User user = userRepository.findUserByKakaoId(kakaoProfile.getKakaoId());
         if (userRepository.findUserByKakaoId(kakaoProfile.getKakaoId()) == null) {
             user = new User();

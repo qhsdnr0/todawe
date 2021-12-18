@@ -30,7 +30,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RestTemplate restTemplate;
-    private final Token token;
 
     public KakaoProfile getUserInfoKakaoUserByToken(String kakaoToken) {
         HttpHeaders headers = new HttpHeaders();
@@ -66,7 +65,7 @@ public class UserService {
             userRepository.saveUser(user);
         }
 
-        return token.makeJwtToken(user);
+        return Token.makeJwtToken(user);
     }
 
     public void userComment(Comment comment, User sendUser, User takeUser) {

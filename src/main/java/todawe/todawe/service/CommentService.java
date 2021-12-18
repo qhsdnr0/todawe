@@ -7,7 +7,6 @@ import todawe.todawe.model.Comment;
 import todawe.todawe.model.User;
 import todawe.todawe.repository.CommentRepository;
 import todawe.todawe.repository.UserRepository;
-import todawe.todawe.token.Token;
 
 @RequiredArgsConstructor
 @Transactional
@@ -16,7 +15,6 @@ public class CommentService {
 
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
-    private final Token accessToken;
 
     public void createComment(Comment comment) {
         commentRepository.saveComment(comment);

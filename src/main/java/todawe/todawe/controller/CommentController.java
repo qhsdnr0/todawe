@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import todawe.todawe.exception.BadRequestException;
+import todawe.todawe.model.Comment;
 import todawe.todawe.model.User;
 import todawe.todawe.model.UserRole;
 import todawe.todawe.service.CommentService;
@@ -52,10 +53,14 @@ public class CommentController {
         return result;
     }
 
-//    @DeleteMapping("/{commentId}")
-//    public ResponseEntity<String> deleteComment(@RequestHeader("Authorization") String token,
-//                                                @PathVariable("commentId") Long commentId) {
-//
-//
-//    }
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<String> deleteComment(@RequestHeader("Authorization") String token,
+                                                @PathVariable("commentId") Long commentId) {
+
+        User user = userService.findUser(Token.decodeJwtToken(token));
+        commentService.deleteComment(user, commentId);
+        return ResponseEntity.ok("DELETED");
+    }
+
+    @PutMapping("/{commentId}")
 }

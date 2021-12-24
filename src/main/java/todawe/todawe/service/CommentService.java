@@ -41,17 +41,17 @@ public class CommentService {
         return userQueryRepository.findCommentsByUser(takeUser);
     }
 
-    public void deleteComment(User sendUser, Long commentId) {
+    public void deleteComment(User user, Long commentId) {
         Comment comment = commentRepository.getById(commentId);
-        if (comment.getSendUser() == sendUser) {
+        if (comment.getSendUser() == user || comment.getTakeUser() == user) {
             commentRepository.delete(comment);
         } else {
             throw new ForbiddenException();
         }
     }
 
-    public void deleteComment(User sendUser, Comment comment) {
-        if (comment.getSendUser() == sendUser) {
+    public void deleteComment(User user, Comment comment) {
+        if (comment.getSendUser() == user || comment.getTakeUser() == user) {
             commentRepository.delete(comment);
         } else {
             throw new ForbiddenException();

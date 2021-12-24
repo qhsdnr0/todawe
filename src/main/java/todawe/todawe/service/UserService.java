@@ -34,8 +34,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserQueryRepository userQueryRepository;
-    private final CommentRepository commentRepository;
-    private final CommentQueryRepository commentQueryRepository;
     private final RestTemplate restTemplate;
 
     public KakaoProfile getUserInfoKakaoUserByToken(String kakaoToken) {
@@ -72,8 +70,12 @@ public class UserService {
             user.setUpdatedAt(LocalDateTime.now());
 
             userRepository.save(user);
-            result.put("message", "FIRST_LOGIN");
         }
+
+        if (user.getAddInfo() == null) {
+            result.put("message", "NOT_ENOUGH_INFORMATION");
+        }
+
         result.put("token", Token.makeJwtToken(user));
         return result;
     }
@@ -104,39 +106,7 @@ public class UserService {
         takeUser.addSendLike(like);
     }
 
-    public void addComment(User sendUser, User takeUser, CommentForm commentForm) {
-        Comment comment = new Comment();
-        comment.setContent(commentForm.getContent());
-        comment.setUpdatedAt(LocalDateTime.now());
-        userComment(comment, sendUser, takeUser);
-        commentRepository.save(comment);
-    }
 
-    public List<Comment> getComment(User takeUser) {
-        return userQueryRepository.findCommentsByUser(takeUser);
-    }
 
-    public void deleteComment(User sendUser, Long commentId) {
-        Comment comment = commentRepository.getById(commentId);
-        if (comment.getSendUser() == sendUser) {
-            commentRepository.delete(comment);
-        } else {
-            throw new ForbiddenException();
-        }
-    }
 
-    public void updateComment(User sendUser, Long commentId, CommentForm commentForm) {
-        Comment comment = commentRepository.getById(commentId);
-        if (comment.getSendUser() == sendUser) {
-            comment.setContent(commentForm.getContent());
-            comment.setUpdatedAt(LocalDateTime.now());
-        } else {
-            throw new ForbiddenException();
-        }
-    }
-//
-//    public void addLike(User sendUser, User takeUser, LikeForm likeForm) {
-//        Like like = new Like();
-//        userLike(like, sendUser, takeUser);
-//    }
 }

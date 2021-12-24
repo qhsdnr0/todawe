@@ -7,6 +7,4 @@ import lombok.Setter;
 public class CommentForm {
 
     private String content;
-
-    private Long takeUserId;
 }

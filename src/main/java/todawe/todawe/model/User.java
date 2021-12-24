@@ -1,5 +1,7 @@
 package todawe.todawe.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter @Setter
 public class User {
 
@@ -20,7 +23,7 @@ public class User {
     private KakaoProfile kakaoProfile;
 
     @Embedded
-    private UserStatus userStatus;
+    private Status status;
 
     @Embedded
     private AddInfo addInfo;
@@ -29,15 +32,19 @@ public class User {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "sendUser")
+    @JsonBackReference
     private List<Comment> sendComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "takeUser")
+    @JsonBackReference
     private List<Comment> takeComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "sendUser")
+    @JsonBackReference
     private List<Like> sendLikes = new ArrayList<>();
 
     @OneToMany(mappedBy = "takeUser")
+    @JsonBackReference
     private List<Like> takeLikes = new ArrayList<>();
 
     public void addSendComment(Comment comment) {

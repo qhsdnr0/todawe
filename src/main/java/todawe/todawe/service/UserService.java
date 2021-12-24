@@ -13,13 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import todawe.todawe.controller.CommentForm;
+import todawe.todawe.controller.UserForm;
 import todawe.todawe.exception.ForbiddenException;
 import todawe.todawe.exception.UnAuthorizedException;
 import todawe.todawe.model.*;
-import todawe.todawe.repository.CommentQueryRepository;
-import todawe.todawe.repository.CommentRepository;
-import todawe.todawe.repository.UserQueryRepository;
-import todawe.todawe.repository.UserRepository;
+import todawe.todawe.repository.*;
 import org.springframework.web.client.RestTemplate;
 import todawe.todawe.util.Token;
 
@@ -88,12 +86,24 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public void updateUser(User user, AddInfo addInfo) {
+    public void updateUserAddInfo(User user, UserForm userForm) {
+        UserRole userRole = userForm.getRole() != null ? userForm.getRole() : user.getAddInfo().getRole();
+        UserPosition userPosition = userForm.getPosition() != null ? userForm.getPosition() : user.getAddInfo().getPosition();
+        String generation = userForm.getGeneration() != null ? userForm.getGeneration() : user.getAddInfo().getGeneration();
+
+        AddInfo addInfo = new AddInfo(userRole, userPosition, generation);
+        user.setUpdatedAt(LocalDateTime.now());
         user.setAddInfo(addInfo);
     }
 
-    public void updateUser(User user, UserStatus userStatus) {
-        user.setUserStatus(userStatus);
+    public void updateUserStatus(User user, UserForm userForm) {
+        UserStatus userStatus = userForm.getStatus() != null ? userForm.getStatus() : user.getStatus().getStatus();
+        UserFeeling userFeeling = userForm.getStatus() != null ? userForm.getFeeling() : user.getStatus().getFeeling();
+        String message = userForm.getMessage() != null ? userForm.getMessage() : user.getStatus().getMessage();
+
+        Status status = new Status(userStatus, userFeeling, message);
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setStatus(status);
     }
 
     public void userComment(Comment comment, User sendUser, User takeUser) {
@@ -105,8 +115,5 @@ public class UserService {
         sendUser.addSendLike(like);
         takeUser.addSendLike(like);
     }
-
-
-
 
 }

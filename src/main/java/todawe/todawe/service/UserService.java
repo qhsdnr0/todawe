@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import todawe.todawe.util.Token;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -61,7 +62,8 @@ public class UserService {
 
     }
 
-    public String getOrCreateKakaoUser(KakaoProfile kakaoProfile) {
+    public HashMap<String, String> getOrCreateKakaoUser(KakaoProfile kakaoProfile) {
+        HashMap<String, String> result = new HashMap<>();
         User user = userQueryRepository.findUserByKakaoId(kakaoProfile.getKakaoId());
         if (userQueryRepository.findUserByKakaoId(kakaoProfile.getKakaoId()) == null) {
             user = new User();
@@ -70,9 +72,10 @@ public class UserService {
             user.setUpdatedAt(LocalDateTime.now());
 
             userRepository.save(user);
+            result.put("message", "FIRST_LOGIN");
         }
-
-        return Token.makeJwtToken(user);
+        result.put("token", Token.makeJwtToken(user));
+        return result;
     }
 
     public void deleteUser(User user) {

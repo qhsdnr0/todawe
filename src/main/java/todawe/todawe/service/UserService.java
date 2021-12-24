@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,17 +13,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import todawe.todawe.controller.CommentForm;
-import todawe.todawe.controller.UserForm;
 import todawe.todawe.exception.ForbiddenException;
 import todawe.todawe.exception.UnAuthorizedException;
 import todawe.todawe.model.*;
+import todawe.todawe.repository.CommentQueryRepository;
 import todawe.todawe.repository.CommentRepository;
+import todawe.todawe.repository.UserQueryRepository;
 import todawe.todawe.repository.UserRepository;
 import org.springframework.web.client.RestTemplate;
 import todawe.todawe.util.Token;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -31,7 +32,9 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserQueryRepository userQueryRepository;
     private final CommentRepository commentRepository;
+    private final CommentQueryRepository commentQueryRepository;
     private final RestTemplate restTemplate;
 
     public KakaoProfile getUserInfoKakaoUserByToken(String kakaoToken) {
@@ -58,17 +61,21 @@ public class UserService {
     }
 
     public String getOrCreateKakaoUser(KakaoProfile kakaoProfile) {
-        User user = userRepository.findUserByKakaoId(kakaoProfile.getKakaoId());
-        if (userRepository.findUserByKakaoId(kakaoProfile.getKakaoId()) == null) {
+        User user = userQueryRepository.findUserByKakaoId(kakaoProfile.getKakaoId());
+        if (userQueryRepository.findUserByKakaoId(kakaoProfile.getKakaoId()) == null) {
             user = new User();
             user.setKakaoProfile(kakaoProfile);
             user.setCreatedAt(LocalDateTime.now());
             user.setUpdatedAt(LocalDateTime.now());
 
-            userRepository.saveUser(user);
+            userRepository.save(user);
         }
 
         return Token.makeJwtToken(user);
+    }
+
+    public void deleteUser(User user) {
+        userRepository.delete(user);
     }
 
     public void updateUser(User user, AddInfo addInfo) {
@@ -94,24 +101,24 @@ public class UserService {
         comment.setContent(commentForm.getContent());
         comment.setUpdatedAt(LocalDateTime.now());
         userComment(comment, sendUser, takeUser);
-        commentRepository.saveComment(comment);
+        commentRepository.save(comment);
     }
 
     public List<Comment> getComment(User takeUser) {
-        return userRepository.findCommentsByUser(takeUser);
+        return userQueryRepository.findCommentsByUser(takeUser);
     }
 
     public void deleteComment(User sendUser, Long commentId) {
-        Comment comment = commentRepository.findComment(commentId);
+        Comment comment = commentRepository.getById(commentId);
         if (comment.getSendUser() == sendUser) {
-            commentRepository.removeComment(comment);
+            commentRepository.delete(comment);
         } else {
             throw new ForbiddenException();
         }
     }
 
     public void updateComment(User sendUser, Long commentId, CommentForm commentForm) {
-        Comment comment = commentRepository.findComment(commentId);
+        Comment comment = commentRepository.getById(commentId);
         if (comment.getSendUser() == sendUser) {
             comment.setContent(commentForm.getContent());
             comment.setUpdatedAt(LocalDateTime.now());
@@ -119,9 +126,9 @@ public class UserService {
             throw new ForbiddenException();
         }
     }
-
-    public void addLike(User sendUser, User takeUser, LikeForm likeForm) {
-        Like like = new Like();
-        userLike(like, sendUser, takeUser);
-    }
+//
+//    public void addLike(User sendUser, User takeUser, LikeForm likeForm) {
+//        Like like = new Like();
+//        userLike(like, sendUser, takeUser);
+//    }
 }

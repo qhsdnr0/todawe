@@ -2,18 +2,11 @@ package todawe.todawe.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import todawe.todawe.config.QuerydslConfig;
 import todawe.todawe.model.Comment;
 import todawe.todawe.model.*;
 import todawe.todawe.model.User;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 
 import java.time.LocalDateTime;
 import java.util.List;

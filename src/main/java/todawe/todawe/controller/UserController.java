@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import todawe.todawe.model.KakaoProfile;
 import todawe.todawe.service.UserService;
 
+import java.util.HashMap;
+
 @RestController
 @RequestMapping("users")
 @RequiredArgsConstructor
@@ -16,10 +18,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public String createUser(@RequestHeader("Authorization") String kakaoToken) {
+    public HashMap<String, Object> createUser(@RequestHeader("Authorization") String kakaoToken) {
+        HashMap<String, Object> result = new HashMap<>();
         KakaoProfile kakaoProfile = userService.getUserInfoKakaoUserByToken(kakaoToken);
-        return userService.getOrCreateKakaoUser(kakaoProfile);
+        result.put("token", userService.getOrCreateKakaoUser(kakaoProfile));
+        return result;
     }
+
+    
 
 //    @PostMapping
 

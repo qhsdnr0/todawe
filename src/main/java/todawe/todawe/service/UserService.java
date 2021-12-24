@@ -49,9 +49,10 @@ public class UserService {
             JSONParser jsonParser    = new JSONParser();
             JSONObject jsonObject    = (JSONObject) jsonParser.parse(userInfo);
             JSONObject kakao_account = (JSONObject) jsonObject.get("kakao_account");
+            JSONObject profile       = (JSONObject) kakao_account.get("profile");
             Long kakaoId             = (Long) jsonObject.get("id");
             String email             = (String) kakao_account.get("email");
-            String name              = (String) kakao_account.get("name");
+            String name              = (String) profile.get("nickname");
 
             return new KakaoProfile(kakaoId, email, name);
         } catch (RestClientException | ParseException ex) {

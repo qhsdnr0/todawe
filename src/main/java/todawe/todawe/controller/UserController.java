@@ -28,6 +28,17 @@ public class UserController {
         return userService.getOrCreateKakaoUser(kakaoProfile);
     }
 
+    @GetMapping("/main/myGeneration")
+    public HashMap<String, Object> getComments(@RequestHeader("Authorization") String token,
+                                               @PathVariable("generation") String generation,
+                                               @RequestParam(required = false) int limit,
+                                               @RequestParam(required = false) int offset) {
+        HashMap<String, Object> result = new HashMap<>();
+        User user = userService.findUser(Token.decodeJwtToken(token));
+        result.put("result", userService.getMainUser(user.getAddInfo().getGeneration(), offset, limit));
+        return result;
+    }
+
     @PutMapping("/addinfo")
     public ResponseEntity<String> updateAddInfo(@RequestHeader("Authorization") String token, @RequestBody UserForm userForm) {
         User user = userService.findUser(Token.decodeJwtToken(token));

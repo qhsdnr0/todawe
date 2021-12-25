@@ -62,5 +62,5 @@ public class CommentController {
         return ResponseEntity.ok("DELETED");
     }
 
-    @PutMapping("/{commentId}")
+//    @PutMapping("/{commentId}")
 }

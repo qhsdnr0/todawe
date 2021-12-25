@@ -116,4 +116,7 @@ public class UserService {
         takeUser.addSendLike(like);
     }
 
+    public List<User> getMainUser(String generation, int offset, int limit) {
+        return userQueryRepository.findByUpdatedAt(generation, limit, offset);
+    }
 }

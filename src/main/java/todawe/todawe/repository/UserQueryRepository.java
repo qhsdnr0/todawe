@@ -20,8 +20,9 @@ public class UserQueryRepository {
     QUser Quser = QUser.user;
     QComment Qcomment = QComment.comment;
 
-    public List<User> findByUpdatedAt(int limit, int offset) {
-        return jpaQueryFactory.selectFrom(Quser).where(Quser.updatedAt.between(LocalDateTime.now().minusDays(1), LocalDateTime.now()))
+    public List<User> findByUpdatedAt(String generation, int limit, int offset) {
+        return jpaQueryFactory.selectFrom(Quser)
+                .where(Quser.updatedAt.between(LocalDateTime.now().minusDays(1), LocalDateTime.now()).and(Quser.addInfo.generation.eq(generation)))
                 .orderBy(Quser.updatedAt.desc()).limit(limit).offset(offset).fetch();
     }
 

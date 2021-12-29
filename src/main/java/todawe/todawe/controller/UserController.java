@@ -29,17 +29,32 @@ public class UserController {
     }
 
     @GetMapping("/main/myGeneration")
-    public HashMap<String, Object> getComments(@RequestHeader("Authorization") String token,
-                                               @PathVariable("generation") String generation,
+    public HashMap<String, Object> getGenerationMainUserList(@RequestHeader("Authorization") String token,
                                                @RequestParam(required = false) int limit,
                                                @RequestParam(required = false) int offset) {
         HashMap<String, Object> result = new HashMap<>();
         User user = userService.findUser(Token.decodeJwtToken(token));
-        result.put("result", userService.getMainUser(user.getAddInfo().getGeneration(), offset, limit));
+        result.put("result", userService.getGenerationMainUser(user.getAddInfo().getGeneration(), offset, limit));
         return result;
     }
 
-    @PutMapping("/addinfo")
+    @GetMapping("/main")
+    public HashMap<String, Object> getMainUserList(@RequestParam(required = false) int limit,
+                                                   @RequestParam(required = false) int offset) {
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("result", userService.getMainUser(offset, limit));
+        return result;
+    }
+
+    @GetMapping("")
+    public HashMap<String, Object> getUserInfo(@RequestHeader("Authorization") String token) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("result", userService.findUser(Token.decodeJwtToken(token)));
+        return result;
+    }
+
+    @PutMapping("/addInfo")
     public ResponseEntity<String> updateAddInfo(@RequestHeader("Authorization") String token, @RequestBody UserForm userForm) {
         User user = userService.findUser(Token.decodeJwtToken(token));
         userService.updateUserAddInfo(user, userForm);

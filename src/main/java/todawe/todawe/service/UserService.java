@@ -1,5 +1,6 @@
 package todawe.todawe.service;
 
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -116,7 +117,11 @@ public class UserService {
         takeUser.addSendLike(like);
     }
 
-    public List<User> getMainUser(String generation, int offset, int limit) {
-        return userQueryRepository.findByUpdatedAt(generation, limit, offset);
+    public List<User> getMainUser(int offset, int limit) {
+        return userQueryRepository.findByUpdatedAt(limit, offset);
+    }
+
+    public List<Tuple> getGenerationMainUser(String generation, int offset, int limit) {
+        return userQueryRepository.findByLike(generation, limit, offset);
     }
 }

@@ -20,7 +20,7 @@ public class LikeQueryRepository {
     QLike Qlike = QLike.like;
 
     public long getLikeCount(User user) {
-        return jpaQueryFactory.select(Qlike).where(Qlike.takeUser.eq(user)).fetchCount();
+        return jpaQueryFactory.selectFrom(Qlike).where(Qlike.takeUser.eq(user)).fetchCount();
     }
 
     public List<User> getLikeUser(User user) {
